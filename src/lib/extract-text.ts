@@ -9,9 +9,7 @@ export async function extractText(file: File): Promise<string> {
   if (name.endsWith(".docx")) {
     const mammoth = await import("mammoth/mammoth.browser.js");
     const arrayBuffer = await file.arrayBuffer();
-    const result = await (mammoth as unknown as {
-      extractRawText: (o: { arrayBuffer: ArrayBuffer }) => Promise<{ value: string }>;
-    }).extractRawText({ arrayBuffer });
+    const result = await mammoth.extractRawText({ arrayBuffer });
     return result.value;
   }
 
