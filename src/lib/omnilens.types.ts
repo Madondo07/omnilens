@@ -4,7 +4,7 @@ export type Claim = {
   id: string;
   text: string;
   type: ClaimType;
-  excerpt?: string;
+  excerpt?: string | undefined;
 };
 
 export type Source = {
@@ -27,7 +27,7 @@ export type Conflict = {
   sourceB: string;
   explanation: string;
   status: "unresolved" | "resolved";
-  resolutionNote?: string;
+  resolutionNote?: string | undefined;
 };
 
 export const PRESET_LENSES = [
@@ -58,6 +58,6 @@ export type ChatMessage = {
   id: string;
   role: "user" | "assistant";
   content: string;
-  citations?: string[];
-  pending?: boolean;
+  citations?: string[] | undefined;
+  pending?: boolean | undefined;
 };
