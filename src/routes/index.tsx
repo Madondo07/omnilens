@@ -1,24 +1,62 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Aperture } from "lucide-react";
+import { ArtifactPane } from "@/components/omnilens/artifact-pane";
+import { ChatPane } from "@/components/omnilens/chat-pane";
+import { SourcesPane } from "@/components/omnilens/sources-pane";
+import { ThemeToggle } from "@/components/omnilens/theme-toggle";
+import { Badge } from "@/components/ui/badge";
+import { useWorkbench } from "@/lib/use-workbench";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+const TITLE = "OmniLens AI — Source-Grounded Project Intelligence";
+const DESC =
+  "Upload project documents into an immutable source pool, surface hard contradictions across them, and generate lens-specific executive posters without touching the originals.";
+
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESC },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESC },
+    ],
+  }),
+  component: Workbench,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Workbench() {
+  const wb = useWorkbench();
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="flex h-screen flex-col gap-3 p-3 lg:p-4">
+      <header className="glass flex flex-wrap items-center justify-between gap-3 rounded-2xl px-4 py-3">
+        <div className="flex items-center gap-3">
+          <span className="glass-soft flex size-9 items-center justify-center rounded-xl">
+            <Aperture className="size-5 text-primary" />
+          </span>
+          <div>
+            <h1 className="text-base font-semibold tracking-tight">OmniLens AI</h1>
+            <p className="label-mono">Project intelligence workbench</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="label-mono">
+            pool {wb.currentHash}
+          </Badge>
+          {wb.unresolved.length > 0 && (
+            <Badge variant="outline" className="border-advisory/50 text-advisory">
+              {wb.unresolved.length} unresolved conflict
+              {wb.unresolved.length === 1 ? "" : "s"}
+            </Badge>
+          )}
+          <ThemeToggle />
+        </div>
+      </header>
+
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto lg:flex-row lg:overflow-hidden">
+        <SourcesPane wb={wb} />
+        <ChatPane wb={wb} />
+        <ArtifactPane wb={wb} />
+      </div>
+    </main>
   );
 }
