@@ -1,11 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Aperture } from "lucide-react";
+import { Aperture, PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen } from "lucide-react";
+import { useState } from "react";
 import { ArtifactPane } from "@/components/omnilens/artifact-pane";
 import { ChatPane } from "@/components/omnilens/chat-pane";
 import { SourcesPane } from "@/components/omnilens/sources-pane";
 import { ThemeToggle } from "@/components/omnilens/theme-toggle";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useWorkbench } from "@/lib/use-workbench";
+
 
 const TITLE = "OmniLens AI — Source-Grounded Project Intelligence";
 const DESC =
