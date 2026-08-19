@@ -68,7 +68,7 @@ export function ArtifactPane({ wb }: { wb: Workbench }) {
             value={gen?.key ?? ""}
             onValueChange={(v) => wb.setActiveGenerationKey(v)}
           >
-            <SelectTrigger className="h-9 flex-1 text-xs">
+            <SelectTrigger className="h-9 min-w-0 flex-1 text-xs">
               <SelectValue placeholder="Cached lens versions" />
             </SelectTrigger>
             <SelectContent>
@@ -81,7 +81,7 @@ export function ArtifactPane({ wb }: { wb: Workbench }) {
               ))}
             </SelectContent>
           </Select>
-          <Badge variant="outline" className="label-mono shrink-0">
+          <Badge variant="outline" className="label-mono hidden shrink-0 xl:inline-flex">
             {wb.generations.length} cached
           </Badge>
         </div>
@@ -137,7 +137,7 @@ export function ArtifactPane({ wb }: { wb: Workbench }) {
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{gen.brief}</p>
 
               <div className="mt-4 overflow-x-auto">
-                <table className="w-full border-collapse text-xs">
+                <table className="w-full min-w-[26rem] border-collapse text-xs">
                   <thead>
                     <tr className="text-left">
                       {["Metrics", "Targets", "Risks", "Owners"].map((h) => (

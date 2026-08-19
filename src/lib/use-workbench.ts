@@ -170,6 +170,7 @@ export function useWorkbench() {
           setSources((prev) => [...prev, source]);
           setLensRanking(result.lensRanking as LensRank[]);
         } catch (err) {
+          console.error("[omnilens] ingest failed", err);
           toast.error(
             `${file.name}: ${err instanceof Error ? err.message : "could not be read"}`,
           );
