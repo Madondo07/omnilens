@@ -42,7 +42,10 @@ function AuthPage() {
     setBusy(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     void navigate({ to: "/workbench" });
   }
 
@@ -57,7 +60,10 @@ function AuthPage() {
       },
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Account created — signing you in.");
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
     if (signInError) {
@@ -74,7 +80,8 @@ function AuthPage() {
     });
     if (result.error) {
       setBusy(false);
-      return toast.error("Google sign-in failed. Try email instead.");
+      toast.error("Google sign-in failed. Try email instead.");
+      return;
     }
     if (result.redirected) return;
     setBusy(false);
