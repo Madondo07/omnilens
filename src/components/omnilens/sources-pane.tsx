@@ -4,11 +4,14 @@ import {
   FileText,
   HelpCircle,
   Loader2,
+  PanelLeftClose,
+  PanelLeftOpen,
   Trash2,
   TriangleAlert,
   Upload,
   X,
 } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -31,12 +34,41 @@ const chip = {
   },
 } as const;
 
-export function SourcesPane({ wb }: { wb: Workbench }) {
+export function SourcesPane({
+  wb,
+  collapsed = false,
+  onToggleCollapse,
+}: {
+  wb: Workbench;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
+}) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [open, setOpen] = useState<Source | null>(null);
   const [noteFor, setNoteFor] = useState<string | null>(null);
   const [note, setNote] = useState("");
+
+  if (collapsed) {
+    return (
+      <aside className="pane w-full shrink-0 flex-row items-center gap-3 px-3 py-2 lg:w-14 lg:flex-col lg:py-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Expand source pool"
+          title="Expand source pool"
+          onClick={onToggleCollapse}
+        >
+          <PanelLeftOpen className="size-4" />
+        </Button>
+        <FileText className="size-4 text-muted-foreground" />
+        <span className="label-mono lg:[writing-mode:vertical-rl]">
+          {wb.sources.length} source{wb.sources.length === 1 ? "" : "s"}
+        </span>
+        {wb.unresolved.length > 0 && <TriangleAlert className="size-4 text-advisory" />}
+      </aside>
+    );
+  }
 
   return (
     <aside className="pane w-full lg:w-[22rem] shrink-0">
@@ -45,8 +77,20 @@ export function SourcesPane({ wb }: { wb: Workbench }) {
           <p className="label-mono">Source pool</p>
           <p className="text-sm font-medium">Immutable · {wb.sources.length} document(s)</p>
         </div>
-        {wb.scanning && <Loader2 className="size-4 animate-spin text-primary" />}
+        <div className="flex items-center gap-1">
+          {wb.scanning && <Loader2 className="size-4 animate-spin text-primary" />}
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Collapse source pool"
+            title="Collapse source pool"
+            onClick={onToggleCollapse}
+          >
+            <PanelLeftClose className="size-4" />
+          </Button>
+        </div>
       </header>
+
 
       <div className="px-4 pt-4">
         <div
