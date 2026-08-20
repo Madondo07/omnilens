@@ -1,11 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { LayoutDashboard, Loader2 } from "lucide-react";
 import { AppHeader } from "@/components/omnilens/app-header";
 import { ArtifactPane } from "@/components/omnilens/artifact-pane";
 import { ChatPane } from "@/components/omnilens/chat-pane";
 import { SourcesPane } from "@/components/omnilens/sources-pane";
+import { WorkbenchHome } from "@/components/omnilens/workbench-home";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { logActivity } from "@/lib/activity";
 import { useAuth } from "@/lib/use-auth";
 import { useWorkbench } from "@/lib/use-workbench";
@@ -32,10 +34,23 @@ function WorkbenchPage() {
   const wb = useWorkbench();
   const [sourcesCollapsed, setSourcesCollapsed] = useState(false);
   const [artifactCollapsed, setArtifactCollapsed] = useState(false);
+  const [showChatView, setShowChatView] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) void navigate({ to: "/auth" });
   }, [loading, user, navigate]);
+
+  const openChat = useCallback(
+    (sessionId: string) => {
+      wb.switchChat(sessionId);
+      setShowChatView(true);
+    },
+    [wb],
+  );
+
+  const backToDashboard = useCallback(() => {
+    setShowChatView(false);
+  }, []);
 
   // Workbench activity log — records what changed in the pool for the profile feed.
   const seen = useRef<{ sources: string[]; gens: string[]; conflicts: string[] } | null>(null);
@@ -66,7 +81,7 @@ function WorkbenchPage() {
         void logActivity({
           kind: "artifact_generated",
           title: "1-Page Executive Poster",
-          detail: `${gen.rows.length} rows · ${gen.unresolvedConflictCount} unresolved conflict(s)`,
+          detail: `${gen.sections?.length ?? 0} sections · ${gen.unresolvedConflictCount} unresolved conflict(s)`,
           lens: gen.lens,
         });
       }
@@ -96,9 +111,10 @@ function WorkbenchPage() {
       <AppHeader
         extras={
           <>
-            <Badge variant="outline" className="label-mono">
-              pool {wb.currentHash}
-            </Badge>
+            <Button variant="ghost" size="sm" onClick={backToDashboard}>
+              <LayoutDashboard className="size-4" />
+              Workbench
+            </Button>
             {wb.unresolved.length > 0 && (
               <Badge variant="outline" className="border-advisory/50 text-advisory">
                 {wb.unresolved.length} unresolved conflict
@@ -109,19 +125,25 @@ function WorkbenchPage() {
         }
       />
 
-      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto lg:flex-row lg:overflow-hidden">
-        <SourcesPane
-          wb={wb}
-          collapsed={sourcesCollapsed}
-          onToggleCollapse={() => setSourcesCollapsed((v) => !v)}
-        />
-        <ChatPane wb={wb} />
-        <ArtifactPane
-          wb={wb}
-          collapsed={artifactCollapsed}
-          onToggleCollapse={() => setArtifactCollapsed((v) => !v)}
-        />
-      </div>
+      {showChatView ? (
+        <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto lg:flex-row lg:overflow-hidden">
+          <SourcesPane
+            wb={wb}
+            collapsed={sourcesCollapsed}
+            onToggleCollapse={() => setSourcesCollapsed((v) => !v)}
+          />
+          <ChatPane wb={wb} />
+          <ArtifactPane
+            wb={wb}
+            collapsed={artifactCollapsed}
+            onToggleCollapse={() => setArtifactCollapsed((v) => !v)}
+          />
+        </div>
+      ) : (
+        <div className="min-h-0 flex-1 overflow-auto">
+          <WorkbenchHome wb={wb} onOpenChat={openChat} />
+        </div>
+      )}
     </main>
   );
 }

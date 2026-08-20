@@ -2,28 +2,34 @@ import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function ThemeToggle() {
-  const [dark, setDark] = useState(false);
+/** Shared light/dark theme state, backed by localStorage + the `.dark` class on <html>. */
+export function useTheme() {
+  const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
     const stored = localStorage.getItem("omnilens-theme");
-    const prefers =
-      stored === "dark" ||
-      (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    setDark(prefers);
-    document.documentElement.classList.toggle("dark", prefers);
+    const dark =
+      stored === "dark" || (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    setTheme(dark ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", dark);
   }, []);
 
-  function toggle() {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("omnilens-theme", next ? "dark" : "light");
+  function toggleTheme() {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.classList.toggle("dark", next === "dark");
+    localStorage.setItem("omnilens-theme", next);
   }
 
+  return { theme, toggleTheme };
+}
+
+export function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <Button variant="ghost" size="icon" onClick={toggle} aria-label="Toggle color theme">
-      {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+    <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle color theme">
+      {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
     </Button>
   );
 }

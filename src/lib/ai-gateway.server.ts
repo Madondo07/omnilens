@@ -1,18 +1,9 @@
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-
-export function createLovableAiGatewayProvider(apiKey: string) {
-  return createOpenAICompatible({
-    name: "lovable",
-    baseURL: "https://ai.gateway.lovable.dev/v1",
-    headers: { "Lovable-API-Key": apiKey },
-    supportsStructuredOutputs: true,
-  });
-}
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
 export function gateway() {
-  const key = process.env["LOVABLE_API_KEY"];
-  if (!key) throw new Error("Missing LOVABLE_API_KEY");
-  return createLovableAiGatewayProvider(key);
+  const key = process.env["GOOGLE_GENERATIVE_AI_API_KEY"];
+  if (!key) throw new Error("Missing GOOGLE_GENERATIVE_AI_API_KEY");
+  return createGoogleGenerativeAI({ apiKey: key });
 }
 
-export const CHAT_MODEL = "google/gemini-3.7-flash";
+export const CHAT_MODEL = "gemini-3.6-flash";

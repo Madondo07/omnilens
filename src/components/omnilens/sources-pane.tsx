@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import {
+  Check,
   CheckCircle2,
   FileText,
   HelpCircle,
@@ -14,6 +15,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,6 +51,11 @@ export function SourcesPane({
   const [noteFor, setNoteFor] = useState<string | null>(null);
   const [note, setNote] = useState("");
 
+  const conflictCountForSource = (filename: string) =>
+    wb.conflicts.filter(
+      (c) => c.status === "unresolved" && (c.sourceA === filename || c.sourceB === filename),
+    ).length;
+
   if (collapsed) {
     return (
       <aside className="pane w-full shrink-0 flex-row items-center gap-3 px-3 py-2 lg:w-14 lg:flex-col lg:py-4">
@@ -73,10 +80,7 @@ export function SourcesPane({
   return (
     <aside className="pane w-full lg:w-[22rem] shrink-0">
       <header className="flex items-center justify-between gap-2 border-b border-glass-border px-4 py-3">
-        <div>
-          <p className="label-mono">Source pool</p>
-          <p className="text-sm font-medium">Immutable · {wb.sources.length} document(s)</p>
-        </div>
+        <p className="label-mono">Sources</p>
         <div className="flex items-center gap-1">
           {wb.scanning && <Loader2 className="size-4 animate-spin text-primary" />}
           <Button
@@ -90,7 +94,6 @@ export function SourcesPane({
           </Button>
         </div>
       </header>
-
 
       <div className="px-4 pt-4">
         <div
@@ -109,11 +112,12 @@ export function SourcesPane({
           }`}
         >
           <Upload className="size-5 text-primary" />
-          <p className="text-sm">Drop files or</p>
           <Button size="sm" variant="secondary" onClick={() => inputRef.current?.click()}>
-            Browse documents
+            Upload documents
           </Button>
-          <p className="label-mono">.pdf · .md · .txt · .docx</p>
+          <p className="text-xs text-muted-foreground">
+            PDF, Markdown, TXT, or DOCX. Originals stay read-only.
+          </p>
           <input
             ref={inputRef}
             type="file"
@@ -140,24 +144,36 @@ export function SourcesPane({
           {wb.sources.map((s) => {
             const c = chip[s.status];
             const Icon = c.icon;
+            const focused = wb.focusedSourceIds.includes(s.id);
+            const conflictCount = conflictCountForSource(s.filename);
             return (
-              <button
+              <div
                 key={s.id}
-                onClick={() => setOpen(s)}
-                className="glass-soft group w-full rounded-lg px-3 py-2.5 text-left transition-shadow hover:shadow-lift"
+                className={`glass-soft group w-full rounded-lg px-3 py-2.5 text-left transition-all ${
+                  focused ? "ring-2 ring-primary/60 border-primary/40" : ""
+                }`}
               >
                 <div className="flex items-start gap-2">
-                  <FileText className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-                  <div className="min-w-0 flex-1">
+                  <Checkbox
+                    checked={focused}
+                    onCheckedChange={() => wb.toggleSourceFocus(s.id)}
+                    className="mt-0.5 shrink-0"
+                    aria-label={`Focus on ${s.filename}`}
+                  />
+                  <button onClick={() => setOpen(s)} className="min-w-0 flex-1 text-left">
                     <p className="truncate text-sm font-medium">{s.filename}</p>
-                    <p className="label-mono mt-0.5">{s.claims.length} claims extracted</p>
-                  </div>
-                  <Badge variant="outline" className={`shrink-0 gap-1 ${c.className}`}>
-                    <Icon className="size-3" />
-                    {c.label}
-                  </Badge>
+                    <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                      <Badge variant="outline" className={`shrink-0 gap-1 ${c.className}`}>
+                        <Icon className="size-3" />
+                        {c.label}
+                        {conflictCount > 0 && <span className="ml-0.5">{conflictCount}</span>}
+                      </Badge>
+                      <span className="label-mono">{s.claims.length} claims</span>
+                    </div>
+                  </button>
+                  {focused && <Check className="mt-0.5 size-4 shrink-0 text-primary" />}
                 </div>
-              </button>
+              </div>
             );
           })}
 
@@ -273,7 +289,12 @@ export function SourcesPane({
                 >
                   <Trash2 className="size-4" />
                 </Button>
-                <Button variant="ghost" size="icon" aria-label="Close" onClick={() => setOpen(null)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Close"
+                  onClick={() => setOpen(null)}
+                >
                   <X className="size-4" />
                 </Button>
               </div>

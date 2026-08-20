@@ -42,6 +42,12 @@ export type PresetLens = (typeof PRESET_LENSES)[number];
 
 export type LensRank = { lens: PresetLens; score: number; reason: string };
 
+/** A heading + bullet-point section inside a generated poster. */
+export type GenerationSection = {
+  heading: string;
+  bullets: string[];
+};
+
 export type Generation = {
   key: string; // `${lens}::${artifactType}::${sourceSetHash}`
   lens: string;
@@ -49,9 +55,16 @@ export type Generation = {
   artifactType: "executive-poster";
   sourceSetHash: string;
   createdAt: number;
+  /** AI-authored document title — never the raw lens/prompt text. */
+  title: string;
   brief: string;
-  rows: { metric: string; target: string; risk: string; owner: string }[];
+  sections: GenerationSection[];
+  completenessScore: number; // 0–100
+  /** Why the score isn't 100 — what's thin or missing, so the chat can explain and suggest next steps. */
+  completenessNote: string;
   unresolvedConflictCount: number;
+  /** @deprecated kept only for rendering legacy cached data */
+  rows?: { metric: string; target: string; risk: string; owner: string }[];
 };
 
 export type ChatMessage = {
@@ -60,4 +73,16 @@ export type ChatMessage = {
   content: string;
   citations?: string[] | undefined;
   pending?: boolean | undefined;
+};
+
+/** A named, resumable chat session (NotebookLM-style). */
+export type ChatSession = {
+  id: string;
+  name: string; // auto-generated from first message, editable
+  emoji: string; // topic-matched emoji, NotebookLM-style
+  messages: ChatMessage[];
+  focusedSourceIds: string[]; // empty = use full pool
+  linkedGenerationKeys: string[];
+  createdAt: number;
+  updatedAt: number;
 };

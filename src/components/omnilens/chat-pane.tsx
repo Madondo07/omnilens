@@ -1,5 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Send, Sparkles, TriangleAlert, Wand2, X } from "lucide-react";
+import {
+  Loader2,
+  MessageSquarePlus,
+  PanelLeftClose,
+  Pencil,
+  Send,
+  Sparkles,
+  TriangleAlert,
+  Wand2,
+  X,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +20,20 @@ export function ChatPane({ wb }: { wb: Workbench }) {
   const [draft, setDraft] = useState("");
   const [customOpen, setCustomOpen] = useState(false);
   const [customLens, setCustomLens] = useState("");
+  const [advisoryDismissed, setAdvisoryDismissed] = useState(false);
   const [advisoryFor, setAdvisoryFor] = useState<{ lens: string; isCustom: boolean } | null>(null);
+  const [editingName, setEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [wb.messages.length, wb.thinking]);
+
+  // Reset advisory dismissal when conflicts change
+  useEffect(() => {
+    if (wb.unresolved.length > 0) setAdvisoryDismissed(false);
+  }, [wb.unresolved.length]);
 
   function requestGeneration(lens: string, isCustom: boolean) {
     if (wb.unresolved.length > 0) {
@@ -25,11 +43,63 @@ export function ChatPane({ wb }: { wb: Workbench }) {
     void wb.generate(lens, isCustom);
   }
 
+  const sessionName = wb.activeSession?.name ?? "New chat";
+  const sessionEmoji = wb.activeSession?.emoji ?? "💬";
+
   return (
     <section className="pane min-w-0 flex-1">
-      <header className="border-b border-glass-border px-5 py-3">
-        <p className="label-mono">Workbench chat</p>
-        <p className="text-sm font-medium">Grounded in the shared source pool</p>
+      <header className="flex items-center justify-between gap-2 border-b border-glass-border px-5 py-3">
+        <div className="min-w-0 flex-1">
+          {editingName ? (
+            <form
+              className="flex items-center gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (wb.activeChatSessionId && nameInput.trim()) {
+                  wb.renameChat(wb.activeChatSessionId, nameInput.trim());
+                }
+                setEditingName(false);
+              }}
+            >
+              <span className="shrink-0 text-base leading-none">{sessionEmoji}</span>
+              <Input
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                className="h-7 text-sm"
+                autoFocus
+                onBlur={() => {
+                  if (wb.activeChatSessionId && nameInput.trim()) {
+                    wb.renameChat(wb.activeChatSessionId, nameInput.trim());
+                  }
+                  setEditingName(false);
+                }}
+              />
+            </form>
+          ) : (
+            <button
+              onClick={() => {
+                setNameInput(sessionName);
+                setEditingName(true);
+              }}
+              className="group flex items-center gap-1.5 text-left"
+            >
+              <span className="shrink-0 text-base leading-none">{sessionEmoji}</span>
+              <p className="truncate text-sm font-medium">{sessionName}</p>
+              <Pencil className="size-3 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="New chat"
+            title="New chat"
+            onClick={() => wb.createChat()}
+          >
+            <MessageSquarePlus className="size-4" />
+          </Button>
+        </div>
       </header>
 
       <ScrollArea className="min-h-0 flex-1">
@@ -62,6 +132,29 @@ export function ChatPane({ wb }: { wb: Workbench }) {
             </div>
           ))}
 
+          {/* Inline Conflict Advisory banner */}
+          {wb.unresolved.length > 0 && !advisoryDismissed && wb.messages.length > 0 && (
+            <div className="glass-soft rounded-xl border-advisory/50 px-4 py-3">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2 text-sm font-medium text-advisory">
+                  <TriangleAlert className="size-4 shrink-0" />
+                  Conflict Advisory
+                </div>
+                <button
+                  onClick={() => setAdvisoryDismissed(true)}
+                  className="shrink-0 text-muted-foreground hover:text-foreground"
+                  aria-label="Dismiss"
+                >
+                  <X className="size-3.5" />
+                </button>
+              </div>
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                ⚠ Unresolved contradictions exist in your source pool. You can still generate, but
+                artifacts will carry a visible caveat.
+              </p>
+            </div>
+          )}
+
           {wb.thinking && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Loader2 className="size-4 animate-spin" /> Reading the pool…
@@ -72,47 +165,43 @@ export function ChatPane({ wb }: { wb: Workbench }) {
       </ScrollArea>
 
       <div className="space-y-3 border-t border-glass-border px-5 py-4">
-        <div className="flex items-center justify-between gap-2">
-          <p className="label-mono">Lens · 1-Page Executive Poster</p>
-          {wb.suggestedLenses.length > 0 && (
-            <span className="flex items-center gap-1 text-xs text-primary">
-              <Sparkles className="size-3" /> suggested for your content
-            </span>
-          )}
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {wb.presetLenses.map((lens) => {
-            const suggested = wb.suggestedLenses.includes(lens);
-            const rank = wb.lensRanking.find((r) => r.lens === lens);
-            const busy = wb.generatingLens === lens;
-            return (
-              <Button
-                key={lens}
-                size="sm"
-                variant={suggested ? "default" : "secondary"}
-                title={rank?.reason ?? "Generate through this lens"}
-                disabled={!!wb.generatingLens}
-                onClick={() => requestGeneration(lens, false)}
-                className={suggested ? "shadow-lift" : ""}
-              >
-                {busy ? <Loader2 className="size-3.5 animate-spin" /> : suggested ? (
-                  <Sparkles className="size-3.5" />
-                ) : null}
-                {lens}
-                {rank && <span className="label-mono ml-1">{Math.round(rank.score)}</span>}
-              </Button>
-            );
-          })}
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-primary/60 text-primary"
+        {/* Lens selector: one horizontally-scrolling row, custom lens pinned right */}
+        <div className="flex items-center gap-2">
+          <div className="scrollbar-none flex min-w-0 flex-1 gap-2 overflow-x-auto">
+            {wb.presetLenses.map((lens) => {
+              const suggested = wb.suggestedLenses.includes(lens);
+              const rank = wb.lensRanking.find((r) => r.lens === lens);
+              const busy = wb.generatingLens === lens;
+              return (
+                <button
+                  key={lens}
+                  title={rank?.reason ?? "Generate through this lens"}
+                  disabled={!!wb.generatingLens}
+                  onClick={() => requestGeneration(lens, false)}
+                  className={`flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 text-xs font-medium transition-all disabled:opacity-50 ${
+                    suggested
+                      ? "bg-primary text-primary-foreground shadow-lift"
+                      : "glass-soft text-foreground hover:bg-accent/60"
+                  }`}
+                >
+                  {busy ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : suggested ? (
+                    <Sparkles className="size-3.5" />
+                  ) : null}
+                  {lens}
+                </button>
+              );
+            })}
+          </div>
+          <button
             disabled={!!wb.generatingLens}
             onClick={() => setCustomOpen((v) => !v)}
+            className="flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-primary/60 px-3 py-2 text-xs font-medium text-primary transition-all hover:bg-primary/10 disabled:opacity-50"
           >
-            <Wand2 className="size-3.5" /> Custom lens
-          </Button>
+            <Wand2 className="size-3.5" />
+            Custom lens +
+          </button>
         </div>
 
         {customOpen && (
@@ -197,7 +286,7 @@ export function ChatPane({ wb }: { wb: Workbench }) {
 
         {wb.generatingLens && (
           <Badge variant="outline" className="gap-1 border-primary/50 text-primary">
-            <Loader2 className="size-3 animate-spin" /> Composing “{wb.generatingLens}” poster
+            <Loader2 className="size-3 animate-spin" /> Composing "{wb.generatingLens}" poster
           </Badge>
         )}
       </div>
