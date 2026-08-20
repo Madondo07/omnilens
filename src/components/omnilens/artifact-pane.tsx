@@ -1,5 +1,18 @@
-import { Check, Copy, History, Layers, TriangleAlert } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Download,
+  History,
+  Layers,
+  Loader2,
+  PanelRightClose,
+  PanelRightOpen,
+  TriangleAlert,
+} from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import { logActivity } from "@/lib/activity";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -31,10 +44,58 @@ function toMarkdown(gen: Generation, stale: boolean) {
   }`;
 }
 
-export function ArtifactPane({ wb }: { wb: Workbench }) {
+export function ArtifactPane({
+  wb,
+  collapsed = false,
+  onToggleCollapse,
+}: {
+  wb: Workbench;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
+}) {
   const [copied, setCopied] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const gen = wb.activeGeneration;
   const stale = !!gen && gen.sourceSetHash !== wb.currentHash;
+
+  async function downloadPdf() {
+    if (!gen) return;
+    setExporting(true);
+    try {
+      const { exportGenerationToPdf } = await import("@/lib/export-pdf");
+      await exportGenerationToPdf(gen, { stale });
+      void logActivity({
+        kind: "artifact_exported",
+        title: "Poster exported as PDF",
+        lens: gen.lens,
+      });
+      toast.success("PDF downloaded.");
+    } catch {
+      toast.error("Could not build the PDF.");
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  if (collapsed) {
+    return (
+      <section className="pane w-full shrink-0 flex-row items-center gap-3 px-3 py-2 lg:w-14 lg:flex-col lg:py-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Expand generated content"
+          title="Expand generated content"
+          onClick={onToggleCollapse}
+        >
+          <PanelRightOpen className="size-4" />
+        </Button>
+        <Layers className="size-4 text-muted-foreground" />
+        <span className="label-mono lg:[writing-mode:vertical-rl]">
+          {wb.generations.length} artifact{wb.generations.length === 1 ? "" : "s"}
+        </span>
+      </section>
+    );
+  }
 
   return (
     <section className="pane w-full lg:w-[30rem] shrink-0">
@@ -45,21 +106,50 @@ export function ArtifactPane({ wb }: { wb: Workbench }) {
             {gen ? gen.lens : "No artifact yet"}
           </p>
         </div>
-        {gen && (
+        <div className="flex items-center gap-1">
+          {gen && (
+            <>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Download as PDF"
+                title="Download as PDF"
+                disabled={exporting}
+                onClick={() => void downloadPdf()}
+              >
+                {exporting ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Download className="size-4" />
+                )}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Copy markdown"
+                title="Copy markdown"
+                onClick={() => {
+                  void navigator.clipboard.writeText(toMarkdown(gen, stale));
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1500);
+                }}
+              >
+                {copied ? <Check className="size-4 text-verified" /> : <Copy className="size-4" />}
+              </Button>
+            </>
+          )}
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Copy markdown"
-            onClick={() => {
-              void navigator.clipboard.writeText(toMarkdown(gen, stale));
-              setCopied(true);
-              setTimeout(() => setCopied(false), 1500);
-            }}
+            aria-label="Collapse generated content"
+            title="Collapse generated content"
+            onClick={onToggleCollapse}
           >
-            {copied ? <Check className="size-4 text-verified" /> : <Copy className="size-4" />}
+            <PanelRightClose className="size-4" />
           </Button>
-        )}
+        </div>
       </header>
+
 
       {wb.generations.length > 0 && (
         <div className="flex items-center gap-2 border-b border-glass-border px-4 py-2.5">
