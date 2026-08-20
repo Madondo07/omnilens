@@ -48,18 +48,19 @@ npm install
 
 ### 2. Configure environment variables
 
-Copy `.env.example` to `.env` and fill in the values:
+This project splits env vars across two files:
 
-```bash
-cp .env.example .env
-```
+- **`.env`** — committed to the repo. Only `VITE_*` values, which are public/client-safe by design (they ship in the browser bundle either way) and which Lovable's build needs present to generate previews and published builds.
+- **`.env.local`** — gitignored, local-dev-only. Real secrets go here; copy `.env.example`'s second half into it.
 
-| Variable | Description |
-| --- | --- |
-| `VITE_SUPABASE_URL` / `SUPABASE_URL` | Your Supabase project URL |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_PUBLISHABLE_KEY` | Supabase anon/publishable key |
-| `VITE_SUPABASE_PROJECT_ID` / `SUPABASE_PROJECT_ID` | Supabase project ref |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | Gemini API key from Google AI Studio |
+| Variable | File | Description |
+| --- | --- | --- |
+| `VITE_SUPABASE_URL` | `.env` | Your Supabase project URL |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | `.env` | Supabase anon/publishable key |
+| `VITE_SUPABASE_PROJECT_ID` | `.env` | Supabase project ref |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | `.env.local` | Gemini API key from Google AI Studio |
+
+When deploying on Lovable, set `GOOGLE_GENERATIVE_AI_API_KEY` under **Cloud tab → Secrets** in your project — never commit it.
 
 ### 3. Set up the database
 
