@@ -1,0 +1,71 @@
+{
+  "planHash": "cb196624bc07e2efd4371cfdf04bbce74287961316a769fbc5b00743a662578b",
+  "phase": "baseline",
+  "recordedAtUtc": "2026-10-08T15:46:47.3027284Z",
+  "retryCount": 0,
+  "resetBaseline": true,
+  "complete": true,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 0,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "production-build",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E build\r\n\u003E vite build\r\n\r\n\u001B[33mThe plugin \u0022vite-tsconfig-paths\u0022 is detected. Vite now supports tsconfig paths resolution natively via the \u001B[1mresolve.tsconfigPaths\u001B[22m option. You can remove the plugin and set \u001B[1mresolve.tsconfigPaths: true\u001B[22m in your Vite config instead.\u001B[39m\r\n\u001B[33mThe plugin \u0022vite-tsconfig-paths\u0022 is detected. Vite now supports tsconfig paths resolution natively via the \u001B[1mresolve.tsconfigPaths\u001B[22m option. You can remove the plugin and set \u001B[1mresolve.tsconfigPaths: true\u001B[22m in your Vite config instead.\u001B[39m\r\n\u001B[33mThe plugin \u0022vite-tsconfig-paths\u0022 is detected. Vite now supports tsconfig paths resolution natively via the \u001B[1mresolve.tsconfigPaths\u001B[22m option. You can remove the plugin and set \u001B[1mresolve.tsconfigPaths: true\u001B[22m in your Vite config instead.\u001B[39m\r\n\u001B[36mvite v8.2.2 \u001B[32mbuilding client environment for production...\u001B[36m\u001B[39m\r\ntransforming...\r\n\u2713 2256 modules transformed.\r\nrendering chunks...\r\ncomputing gzip size...\r\ndist/client/assets/pdf.worker.min-CHFwMXne.mjs   1,262.39 kB\r\ndist/client/assets/styles-JG5dslDk.css              53.75 kB \u2502 gzip:   9.65 kB\r\ndist/client/assets/pdf.worker.min-C8Ts8bNu.js        0.06 kB \u2502 gzip:   0.08 kB\r\ndist/client/assets/input-b1GRW_6n.js                 0.65 kB \u2502 gzip:   0.41 kB\r\ndist/client/assets/label-B9qVqFf3.js                 0.69 kB \u2502 gzip:   0.45 kB\r\ndist/client/assets/wand-sparkles-i0ILs3OR.js         0.74 kB \u2502 gzip:   0.38 kB\r\ndist/client/assets/rolldown-runtime-W7wSyTde.js      0.97 kB \u2502 gzip:   0.56 kB\r\ndist/client/assets/badge-CY0jUam_.js                 2.27 kB \u2502 gzip:   0.99 kB\r\ndist/client/assets/export-pdf-BqC81n8d.js            2.34 kB \u2502 gzip:   1.09 kB\r\ndist/client/assets/profile-C1yPdkM1.js               4.40 kB \u2502 gzip:   1.58 kB\r\ndist/client/assets/activity-D5RaN2Bw.js              5.34 kB \u2502 gzip:   1.62 kB\r\ndist/client/assets/dist-BzlUkWY0.js                 11.65 kB \u2502 gzip:   4.30 kB\r\ndist/client/assets/auth-DNc7FoPp.js                 11.98 kB \u2502 gzip:   3.45 kB\r\ndist/client/assets/activity-BeeXXuOI.js             14.53 kB \u2502 gzip:   4.68 kB\r\ndist/client/assets/purify.es-ChwZkWde.js            26.81 kB \u2502 gzip:  10.65 kB\r\ndist/client/assets/routes-PfGlMG7p.js               28.03 kB \u2502 gzip:   7.34 kB\r\ndist/client/assets/use-auth-C2emLZjO.js             33.39 kB \u2502 gzip:  12.55 kB\r\ndist/client/assets/dist-BZTNgeK3.js                 41.28 kB \u2502 gzip:  14.11 kB\r\ndist/client/assets/app-header-TVPgUv1M.js           42.36 kB \u2502 gzip:  13.56 kB\r\ndist/client/assets/workbench-CnLpQ4X1.js            77.31 kB \u2502 gzip:  23.13 kB\r\ndist/client/assets/index.es-U7TEo6f_.js            151.44 kB \u2502 gzip:  48.92 kB\r\ndist/client/assets/html2canvas-P1I5WqCs.js         199.50 kB \u2502 gzip:  46.77 kB\r\ndist/client/assets/jspdf.es.min-CCa20Yrf.js        399.18 kB \u2502 gzip: 129.63 kB\r\ndist/client/assets/pdf-CM-ilVUW.js                 427.30 kB \u2502 gzip: 127.39 kB\r\ndist/client/assets/mammoth.browser-Bl8GXOpx.js     491.58 kB \u2502 gzip: 118.71 kB\r\ndist/client/assets/index-D5UNpkzz.js               593.52 kB \u2502 gzip: 172.50 kB\r\n\r\n\u001B[32m\u2713 built in 5.14s\u001B[39m\r\n\u001B[33m[plugin builtin:vite-reporter] \r\n(!) Some chunks are larger than 500 kB after minification. Consider:\r\n- Using dynamic import() to code-split the application\r\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\r\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\u001B[39m\r\n\u001B[36mvite v8.2.2 \u001B[32mbuilding ssr environment for production...\u001B[36m\u001B[39m\r\ntransforming...\r\n\u2713 108 modules transformed.\r\nrendering chunks...\r\ncomputing gzip size...\r\ndist/server/assets/pdf.worker.min-C4v1Kq3M.js               0.19 kB \u2502 gzip:  0.15 kB\r\ndist/server/assets/empty-plugin-adapters-D9UWiqvJ.js        0.22 kB \u2502 gzip:  0.16 kB\r\ndist/server/assets/label-AutfcB-T.js                        0.64 kB \u2502 gzip:  0.39 kB\r\ndist/server/assets/input-NvmijQlt.js                        0.76 kB \u2502 gzip:  0.46 kB\r\ndist/server/assets/badge-DHlcf1ty.js                        0.98 kB \u2502 gzip:  0.51 kB\r\ndist/server/assets/button-BpE9Czok.js                       1.78 \n\u2026[truncated]",
+        "durationMs": 15086
+      },
+      {
+        "name": "home-page-responds",
+        "kind": "http-probe",
+        "verificationMethod": "http-status",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": null,
+        "outputSample": "HTTP 200\n\u003C!DOCTYPE html\u003E\u003Chtml lang=\u0022en\u0022 data-tsd-source=\u0022/src/routes/__root.tsx:109:5\u0022\u003E\u003Chead data-tsd-source=\u0022/src/routes/__root.tsx:110:7\u0022\u003E\u003Cmeta charSet=\u0022utf-8\u0022/\u003E\u003Cmeta name=\u0022viewport\u0022 content=\u0022width=device-width, initial-scale=1\u0022/\u003E\u003Clink rel=\u0022stylesheet\u0022 href=\u0022/src/styles.css\u0022 data-precedence=\u0022default\u0022/\u003E\u003Clink rel=\u0022stylesheet\u0022 href=\u0022https://fonts.googleapis.com/css2?family=Space\u002BGrotesk:wght@400;500;600;700\u0026amp;family=IBM\u002BPlex\u002BMono:wght@400;500\u0026amp;display=swap\u0022 data-precedence=\u0022default\u0022/\u003E\u003Clink rel=\u0022stylesheet\u0022 href=\u0022/@tanstack-start/styles.css?routes=__root__%2C%2F\u0022 data-tanstack-router-dev-styles=\u0022true\u0022 data-precedence=\u0022default\u0022/\u003E\u003Ctitle\u003EOmniLens AI \u2014 Source-Grounded Project Intelligence\u003C/title\u003E\u003Cmeta property=\u0022og:type\u0022 content=\u0022website\u0022/\u003E\u003Cmeta name=\u0022twitter:card\u0022 content=\u0022summary_large_image\u0022/\u003E\u003Cmeta name=\u0022description\u0022 content=\u0022Upload project documents into an immutable source pool, surface hard contradictions across them, and generate lens-specific executive posters without touching the originals.\u0022/\u003E\u003Cmeta property=\u0022og:title\u0022 content=\u0022OmniLens AI \u2014 Source-Grounded Project Intelligence\u0022/\u003E\u003Cmeta property=\u0022og:description\u0022 content=\u0022Upload project documents into an immutable source pool, surface hard contradictions across them, and generate lens-specific executive posters without touching the originals.\u0022/\u003E\u003Clink rel=\u0022modulepreload\u0022 href=\u0022/@id/virtual:tanstack-start-dev-client-entry\u0022/\u003E\u003Clink rel=\u0022preconnect\u0022 href=\u0022https://fonts.googleapis.com\u0022/\u003E\u003Clink rel=\u0022preconnect\u0022 href=\u0022https://fonts.gstatic.com\u0022 crossorigin=\u0022anonymous\u0022/\u003E\u003Clink rel=\u0022icon\u0022 href=\u0022/favicon.ico\u0022 type=\u0022image/x-icon\u0022/\u003E\u003C/head\u003E\u003Cbody data-tsd-source=\u0022/src/routes/__root.tsx:113:7\u0022\u003E\u003C!--$--\u003E\u003Cdiv class=\u0022min-h-screen flex flex-col font-sans\u0022 data-tsd-source=\u0022/src/components/omnilens/landing-page.tsx:104:5\u0022\u003E\u003Cheader class=\u0022sticky top-0 z-50 w-full border-b border-border/40 glass-soft\u0022 data-tsd-source=\u0022/src/components/omnilens/landing-page.tsx:106:7\u0022\u003E\u003Cdiv class=\u0022container flex h-16 max-w-7xl items-center justify-between mx-auto px-4\u0022 data-tsd-source=\u0022/src/components/omnilens/landing-page.tsx:107:9\u0022\u003E\u003Cdiv class=\u0022flex items-center gap-2\u0022 data-tsd-source=\u0022/src/components/omnilens/landing-page.tsx:108:11\u0022\u003E\u003Csvg xmlns=\u0022http://www.w3.org/2000/svg\u0022 width=\u002224\u0022 height=\u002224\u0022 viewBox=\u00220 0 24 24\u0022 fill=\u0022none\u0022 stroke=\u0022currentColor\u0022 stroke-width=\u00222\u0022 stroke-linecap=\u0022round\u0022 stroke-linejoin=\u0022round\u0022 class=\u0022lucide lucide-aperture h-6 w-6 text-primary\u0022 aria-hidden=\u0022true\u0022 data-tsd-source=\u0022/src/components/omnilens/landing-page.tsx:109:13\u0022\u003E\u003Ccircle cx=\u002212\u0022 cy=\u002212\u0022 r=\u002210\u0022\u003E\u003C/circle\u003E\u003Cpath d=\u0022m14.31 8 5.74 9.94\u0022\u003E\u003C/path\u003E\u003Cpath d=\u0022M9.69 8h11.48\u0022\u003E\u003C/path\u003E\u003Cpath d=\u0022m7.38 12 5.74-9.94\u0022\u003E\u003C/path\u003E\u003Cpath d=\u0022M9.69 16 3.95 6.06\u0022\u003E\u003C/path\u003E\u003Cpath d=\u0022M14.31 16H2.83\u0022\u003E\u003C/path\u003E\u003Cpath d=\u0022m16.62 12-5.74 9.94\u0022\u003E\u003C/path\u003E\u003C/svg\u003E\u003Cspan class=\u0022text-xl font-bold tracking-tight\u0022 data-tsd-source=\u0022/src/components/omnilens/landing-page.tsx:110:13\u0022\u003EOmniLens AI\u003C/span\u003E\u003C/div\u003E\u003Cdiv class=\u0022flex items-center gap-4\u0022 data-tsd-source=\u0022/src/components/omnilens/landing-page.tsx:112:11\u0022\u003E\u003Cbutton class=\u0022inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [\u0026amp;_svg]:pointer-events-none [\u0026amp;_svg]:size-4 [\u0026amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 w-9\u0022 aria-label=\u0022Toggle color theme\u0022 data-tsd-source=\u0022/src/components/omnilens/theme-toggle.tsx:31:5\u0022\u003E\u003Csvg xmlns=\u0022http://www.w3.org/2000/svg\u0022 width=\u002224\u0022 height=\u002224\u0022 viewBox=\u00220 0 24 24\u0022 fill=\u0022none\u0022 stroke=\u0022currentColor\u0022 stroke-width=\u00222\u0022 stroke-linecap=\u0022round\u0022 stroke-linejoin=\u0022round\u0022 class=\u0022lucide lucide-moon size-4\u0022 aria-hidden=\u0022true\u0022 data-tsd-source=\u0022/src/components/omnilens/theme-toggle.tsx:32:56\u0022\u003E\u003Cpath d=\u0022M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401\u0022\u003E\u003C/path\u003E\u003C/svg\u003E\u003C/button\u003E\u003Ca data-tsd-source=\u0022/src/components/omnilens/landing-page.tsx:120:17\u0022 href=\u0022/auth\u0022 class=\u0022inline-flex items-center justify-center gap-2 whites\n\u2026[truncated]",
+        "durationMs": 12579
+      }
+    ],
+    "executions": [
+      {
+        "source": "production-build",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "build"
+        ],
+        "cwd": "C:\\Users\\DELL\\omnilens",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "home-page-responds",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "dev",
+          "--",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8082",
+          "--strictPort"
+        ],
+        "cwd": "C:\\Users\\DELL\\omnilens",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      }
+    ]
+  }
+}

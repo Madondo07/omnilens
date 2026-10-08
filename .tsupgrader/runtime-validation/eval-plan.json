@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-10-08T17:26:08+02:00",
+  "generatedOnPlatform": "win32",
+  "projectType": "webapp",
+  "setup": [],
+  "assertions": [
+    {
+      "name": "production-build",
+      "kind": "process",
+      "command": "npm",
+      "args": ["run", "build"],
+      "verificationMethod": "exit-code",
+      "expected": "0",
+      "timeoutSeconds": 300
+    },
+    {
+      "name": "home-page-responds",
+      "kind": "http-probe",
+      "startCommand": "npm",
+      "startArgs": ["run", "dev", "--", "--host", "127.0.0.1", "--port", "8082", "--strictPort"],
+      "url": "http://127.0.0.1:8082/",
+      "verificationMethod": "http-status",
+      "expected": "200",
+      "timeoutSeconds": 120
+    }
+  ]
+}
